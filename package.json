@@ -5,6 +5,10 @@
   "type": "module",
   "license": "CC-BY-4.0",
   "keywords": ["pii", "redaction", "privacy", "kenya", "data-protection", "on-device", "rampart"],
+  "homepage": "https://github.com/Smathuki/rampart-ke#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/Smathuki/rampart-ke.git" },
+  "bugs": { "url": "https://github.com/Smathuki/rampart-ke/issues" },
+  "engines": { "node": ">=18" },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -19,7 +23,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "dev": "vite",
-    "demo:build": "vite build"
+    "demo:build": "vite build",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@huggingface/transformers": "^4.2.0",
