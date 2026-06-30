@@ -1,5 +1,8 @@
 # rampart-ke
 
+[![CI](https://github.com/Smathuki/rampart-ke/actions/workflows/ci.yml/badge.svg)](https://github.com/Smathuki/rampart-ke/actions/workflows/ci.yml)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
+
 **Kenya-localized, on-device PII redaction.** A thin wrapper around
 [Rampart](https://huggingface.co/nationaldesignstudio/rampart) (National Design Studio) that scrubs
 Kenyan personal data **in the browser, before any byte leaves the device** — so it never reaches a
@@ -121,6 +124,12 @@ local: load once so the model caches, then **disconnect Wi-Fi** and redact again
 npm test                 # fast, offline (recognizers, premask, false-positives, integration)
 RAMPART_KE_E2E=1 npm test  # also runs the full-model end-to-end test (downloads weights)
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) — especially the **precision rule** (prefer context-anchoring
+over shape-only matching; keep the false-positive corpus green) and the guide to adding a recognizer.
+Never put real personal data in issues, PRs, or fixtures.
 
 ## Attribution & license
 
