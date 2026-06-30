@@ -38,6 +38,33 @@ Newest entries at the top.
 
 ## Changelog
 
+### 2026-06-30 — Swahili/Sheng name leakage (FIXED)
+- **Symptom:** the model (Western-name-trained) left Kenyan names exposed in Swahili context —
+  `"Jina langu ni Kamau"` → Kamau leaked; `"Mimi ni Otieno"` → Otieno leaked. Inconsistent (it did
+  catch `"Naitwa Wanjiru Mwangi"`).
+- **Fix:** `src/recognizers/swahiliName.ts` — a deterministic recognizer that captures the 1–2
+  capitalised tokens after a high-precision cue (`jina langu ni`, `jina ni`, `naitwa`, `ninaitwa`,
+  `anaitwa`, `mimi ni`, `my name is`) and redacts them to `[NAME_KE_n]`. Case-sensitive on the name
+  so "mimi ni mwalimu" does not fire.
+- **Verified:** unit tests + live model re-run; the three leaking samples now redact cleanly.
+
+### 2026-06-30 — Counties over-redacted when the model mislabels them (FIXED)
+- **Symptom:** the model tagged `"Nairobi"` as `GIVEN_NAME` in Swahili context, so it was redacted —
+  violating the keep-county policy (we keep coarse geography for analytics). The policy only kept the
+  model's `CITY`/`STATE` labels, not arbitrary mislabels.
+- **Fix:** `keepCounties()` in `src/ner.ts` drops any model span whose text is one of the 47 counties
+  (tolerating a trailing " County"), enforcing keep regardless of the assigned label.
+
+### 2026-06-30 — Published dist failed Node ESM import (FIXED)
+- **Symptom:** importing the built package in Node threw `ERR_UNSUPPORTED_DIR_IMPORT` — the emitted
+  JS used extensionless/directory specifiers (`./recognizers`), which Node ESM rejects. The
+  `npm publish --dry-run` did not catch this (it only packs, never imports).
+- **Root cause:** TypeScript emits import specifiers verbatim; bundler-style extensionless imports
+  don't resolve at runtime under Node's ESM loader.
+- **Fix:** explicit `.js` extensions on every relative import in `src/` (directory imports →
+  `/index.js`). Caught by importing the built `dist/` from a plain Node script, exactly as a
+  consumer would.
+
 ### 2026-06-30 — Token-edge fragmentation on names (FIXED)
 - **Symptom:** `"JOHN OCHIENG"` redacted to `[GIVEN_NAME_1] [SURNAME_1] G` — the trailing `G`
   was left exposed.
@@ -94,6 +121,10 @@ Newest entries at the top.
 
 ## Open items / Phase 2
 
+- **Sheng false-positives + placeholder collision (over-redaction, not a leak):** the model flags
+  Sheng function words as names (e.g. "Niko" = "I'm at") and can span a label across our friendly
+  `[LOCATION_KE_n]` placeholders, absorbing them. Result is safe over-redaction, but messy output.
+  Real fix is Phase-2 fine-tuning; a cheaper mitigation is opaque sentinels during the model pass.
 - **Model fine-tuning on synthetic Kenyan names/places** — lifts recall on existing labels
   (GIVEN_NAME/SURNAME/STREET_NAME) for Kenyan data. New structured types stay deterministic.
 - **Non-Latin scripts** (Arabic-script Somali names): base model ~13.7% recall upstream.

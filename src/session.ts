@@ -7,7 +7,7 @@
  * only on the client; only placeholdered text ever leaves the device.
  */
 
-import type { KenyanLabel, KenyanMatch } from "./types";
+import type { KenyanLabel, KenyanMatch } from "./types.js";
 
 /** Matches any `[LABEL_n]` token; used to find Kenyan placeholders on reveal. */
 const PLACEHOLDER_PATTERN = /\[[A-Z][A-Z0-9_]*_\d+\]/g;

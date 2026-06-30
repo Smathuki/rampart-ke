@@ -1,12 +1,13 @@
-import type { Recognizer } from "../types";
-import { kraPinRecognizer } from "./kra";
-import { phoneRecognizer } from "./phone";
-import { mpesaCodeRecognizer, mpesaPaybillRecognizer } from "./mpesa";
-import { nationalIdRecognizer, maishaNambaRecognizer } from "./nationalId";
-import { healthRecognizer } from "./health";
-import { bankAccountRecognizer, passportRecognizer } from "./bank";
-import { orgRecognizer } from "./org";
-import { locationRecognizer } from "./location";
+import type { Recognizer } from "../types.js";
+import { kraPinRecognizer } from "./kra.js";
+import { phoneRecognizer } from "./phone.js";
+import { mpesaCodeRecognizer, mpesaPaybillRecognizer } from "./mpesa.js";
+import { nationalIdRecognizer, maishaNambaRecognizer } from "./nationalId.js";
+import { healthRecognizer } from "./health.js";
+import { bankAccountRecognizer, passportRecognizer } from "./bank.js";
+import { orgRecognizer } from "./org.js";
+import { locationRecognizer } from "./location.js";
+import { swahiliNameRecognizer } from "./swahiliName.js";
 
 /** The full built-in Kenyan recognizer set, used by default. */
 export const DEFAULT_RECOGNIZERS: readonly Recognizer[] = [
@@ -19,6 +20,7 @@ export const DEFAULT_RECOGNIZERS: readonly Recognizer[] = [
   maishaNambaRecognizer,
   nationalIdRecognizer,
   healthRecognizer,
+  swahiliNameRecognizer,
   orgRecognizer,
   locationRecognizer,
 ];
@@ -35,4 +37,5 @@ export {
   passportRecognizer,
   orgRecognizer,
   locationRecognizer,
+  swahiliNameRecognizer,
 };

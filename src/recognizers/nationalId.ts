@@ -1,5 +1,5 @@
-import type { Recognizer } from "../types";
-import { scan } from "./util";
+import type { Recognizer } from "../types.js";
+import { scan } from "./util.js";
 
 /**
  * National ID number: 7–8 digits. Bare 7–8 digit numbers are everywhere

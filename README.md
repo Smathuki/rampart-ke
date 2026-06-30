@@ -85,10 +85,11 @@ const guard = await createKenyanGuard({ heuristicsOnly: true });
 | `[PASSPORT_n]`     | Passport number (context-anchored)                           |
 | `[ORG_KE_n]`       | Company names — "… Limited / Ltd / PLC / SACCO / Holdings"    |
 | `[LOCATION_KE_n]`  | Estates, named roads, P.O. boxes                             |
+| `[NAME_KE_n]`      | Names after a Swahili/Sheng cue ("Jina langu ni …", "Mimi ni …") |
 
-**Geography policy:** the 47 counties are *kept* (coarse geography is useful and not identifying);
-fine-grained estates/roads/P.O. boxes are *redacted*. See [`src/policy.ts`](src/policy.ts) and
-[`src/data/`](src/data/).
+**Geography policy:** the 47 counties are *kept* (coarse geography is useful and not identifying) —
+enforced even when the model mislabels a county as a name; fine-grained estates/roads/P.O. boxes are
+*redacted*. See [`src/policy.ts`](src/policy.ts), [`src/ner.ts`](src/ner.ts), and [`src/data/`](src/data/).
 
 ## Precision
 

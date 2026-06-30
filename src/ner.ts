@@ -17,6 +17,7 @@ import {
   type NerOptions,
   type Span,
 } from "@nationaldesignstudio/rampart";
+import { COUNTY_SET } from "./data/counties.js";
 
 /**
  * Characters that count as part of a single word when repairing a boundary:
@@ -51,10 +52,26 @@ export function withBoundaryRepair(detect: NerDetector): NerDetector {
 }
 
 /**
+ * Drop model spans whose text is one of the 47 counties. The model sometimes
+ * mislabels a county as a GIVEN_NAME (seen with "Nairobi" in Swahili context),
+ * which would redact coarse geography we deliberately keep for analytics. This
+ * enforces the keep-county policy regardless of the label the model assigned.
+ * A trailing " County" is tolerated ("Nairobi County" → kept).
+ */
+export function keepCounties(spans: readonly Span[]): Span[] {
+  return spans.filter((s) => {
+    const name = s.text.trim().replace(/\s+county$/i, "").toLowerCase();
+    return !COUNTY_SET.has(name);
+  });
+}
+
+/**
  * Build the default boundary-repairing detector: the real Rampart ONNX
- * classifier, wrapped so token-edge fragments are swallowed before redaction.
+ * classifier, wrapped so token-edge fragments are swallowed before redaction
+ * and counties are never redacted.
  */
 export async function createRepairingNer(options: NerOptions = {}): Promise<NerDetector> {
   const classifier = await loadNerClassifier(options);
-  return withBoundaryRepair((text) => detectNer(text, classifier, options.minScore));
+  return async (text) =>
+    keepCounties(repairSpanBoundaries(text, await detectNer(text, classifier, options.minScore)));
 }

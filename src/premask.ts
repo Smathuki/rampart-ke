@@ -7,7 +7,7 @@
  * session table can splice placeholders without corrupting offsets.
  */
 
-import type { KenyanMatch, Recognizer } from "./types";
+import type { KenyanMatch, Recognizer } from "./types.js";
 
 /**
  * Run every recognizer over `text` and collapse the results into a

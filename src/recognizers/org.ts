@@ -1,6 +1,6 @@
-import type { Recognizer } from "../types";
-import { ORG_SUFFIXES } from "../data/orgSuffixes";
-import { escapeRegExp, scan } from "./util";
+import type { Recognizer } from "../types.js";
+import { ORG_SUFFIXES } from "../data/orgSuffixes.js";
+import { escapeRegExp, scan } from "./util.js";
 
 /**
  * Company / organisation names: 1–4 capitalised tokens immediately followed by

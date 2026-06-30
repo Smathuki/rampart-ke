@@ -11,6 +11,7 @@ import {
   passportRecognizer,
   orgRecognizer,
   locationRecognizer,
+  swahiliNameRecognizer,
 } from "../src/recognizers";
 
 /** Helper: the redacted substrings a recognizer extracts from text. */
@@ -109,5 +110,17 @@ describe("Locations", () => {
   });
   it("KEEPS counties (does not redact them)", () => {
     expect(values(locationRecognizer, "Nairobi Nakuru Kisumu")).toEqual([]);
+  });
+});
+
+describe("Swahili / Sheng name cues", () => {
+  it("captures the name after a cue, not the cue", () => {
+    expect(values(swahiliNameRecognizer, "Jina langu ni Kamau na ninaishi")).toEqual(["Kamau"]);
+    expect(values(swahiliNameRecognizer, "Mimi ni Otieno, nasaka kazi")).toEqual(["Otieno"]);
+    expect(values(swahiliNameRecognizer, "Naitwa Wanjiru Mwangi")).toEqual(["Wanjiru Mwangi"]);
+    expect(values(swahiliNameRecognizer, "Niko Buruburu, jina ni Brayo")).toEqual(["Brayo"]);
+  });
+  it("does not fire on a lowercase word after the cue", () => {
+    expect(values(swahiliNameRecognizer, "Mimi ni mwalimu wa shule")).toEqual([]);
   });
 });

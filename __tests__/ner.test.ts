@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { NerDetector, Span } from "@nationaldesignstudio/rampart";
-import { repairSpanBoundaries, withBoundaryRepair } from "../src/ner";
+import { keepCounties, repairSpanBoundaries, withBoundaryRepair } from "../src/ner";
 
 const surname = (start: number, end: number, text: string): Span => ({
   start,
@@ -46,5 +46,26 @@ describe("token-edge fragmentation repair", () => {
     const repaired = await withBoundaryRepair(fragmenting)("JOHN OCHIENG");
     expect(repaired[0]!.end).toBe(12);
     expect(repaired[0]!.text).toBe("OCHIENG");
+  });
+});
+
+describe("keep-county enforcement", () => {
+  const span = (text: string, label: Span["label"]): Span => ({
+    start: 0,
+    end: text.length,
+    label,
+    score: 0.9,
+    source: "ner",
+    text,
+  });
+
+  it("drops a model span whose text is a county, even if mislabeled as a name", () => {
+    const spans = [span("Nairobi", "GIVEN_NAME"), span("Achieng", "SURNAME")];
+    const kept = keepCounties(spans);
+    expect(kept.map((s) => s.text)).toEqual(["Achieng"]); // Nairobi kept (not redacted)
+  });
+
+  it("tolerates a trailing ' County'", () => {
+    expect(keepCounties([span("Nakuru County", "STATE")])).toEqual([]);
   });
 });

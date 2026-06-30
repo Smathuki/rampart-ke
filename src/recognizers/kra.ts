@@ -1,5 +1,5 @@
-import type { Recognizer } from "../types";
-import { scan } from "./util";
+import type { Recognizer } from "../types.js";
+import { scan } from "./util.js";
 
 /**
  * KRA PIN: a leading letter (A = individual, P = non-individual), 9 digits, and

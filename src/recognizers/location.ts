@@ -1,6 +1,6 @@
-import type { KenyanMatch, Recognizer } from "../types";
-import { ESTATES } from "../data/estates";
-import { escapeRegExp, scan } from "./util";
+import type { KenyanMatch, Recognizer } from "../types.js";
+import { ESTATES } from "../data/estates.js";
+import { escapeRegExp, scan } from "./util.js";
 
 /**
  * Fine-grained Kenyan geography — redacted to [LOCATION_KE_n]. Counties are

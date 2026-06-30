@@ -1,4 +1,4 @@
-import type { KenyanLabel, KenyanMatch, Recognizer } from "../types";
+import type { KenyanLabel, KenyanMatch, Recognizer } from "../types.js";
 
 /**
  * Health & social-security membership numbers, context-anchored to their

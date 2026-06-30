@@ -1,5 +1,5 @@
-import type { KenyanMatch, Recognizer } from "../types";
-import { scan } from "./util";
+import type { KenyanMatch, Recognizer } from "../types.js";
+import { scan } from "./util.js";
 
 /**
  * M-Pesa transaction (confirmation) code: 10 characters, upper-case, starts

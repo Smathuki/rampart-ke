@@ -15,12 +15,12 @@
  */
 
 import { createGuard, type ChatGuard, type NerDetector } from "@nationaldesignstudio/rampart";
-import { DEFAULT_RECOGNIZERS } from "./recognizers";
-import { detectKenyan } from "./premask";
-import { createRepairingNer } from "./ner";
-import { KenyanEntityTable, type KenyanEntity } from "./session";
-import { KE_KEEP_LABELS } from "./policy";
-import type { KenyanGuardOptions, Recognizer } from "./types";
+import { DEFAULT_RECOGNIZERS } from "./recognizers/index.js";
+import { detectKenyan } from "./premask.js";
+import { createRepairingNer } from "./ner.js";
+import { KenyanEntityTable, type KenyanEntity } from "./session.js";
+import { KE_KEEP_LABELS } from "./policy.js";
+import type { KenyanGuardOptions, Recognizer } from "./types.js";
 
 /** Result of protecting one message. */
 export interface KenyanProtectResult {
@@ -105,11 +105,11 @@ export async function protectKE(
   return (await sharedGuard).protect(text);
 }
 
-export { DEFAULT_RECOGNIZERS } from "./recognizers";
-export { detectKenyan } from "./premask";
-export { repairSpanBoundaries, withBoundaryRepair, createRepairingNer } from "./ner";
-export { KenyanEntityTable } from "./session";
-export { KE_KEEP_LABELS } from "./policy";
-export { LABEL_DESCRIPTIONS } from "./labels";
-export type { KenyanEntity, KenyanScrubResult } from "./session";
-export type { KenyanGuardOptions, KenyanLabel, KenyanMatch, Recognizer } from "./types";
+export { DEFAULT_RECOGNIZERS } from "./recognizers/index.js";
+export { detectKenyan } from "./premask.js";
+export { repairSpanBoundaries, withBoundaryRepair, keepCounties, createRepairingNer } from "./ner.js";
+export { KenyanEntityTable } from "./session.js";
+export { KE_KEEP_LABELS } from "./policy.js";
+export { LABEL_DESCRIPTIONS } from "./labels.js";
+export type { KenyanEntity, KenyanScrubResult } from "./session.js";
+export type { KenyanGuardOptions, KenyanLabel, KenyanMatch, Recognizer } from "./types.js";

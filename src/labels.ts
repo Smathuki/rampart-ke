@@ -1,4 +1,4 @@
-import type { KenyanLabel } from "./types";
+import type { KenyanLabel } from "./types.js";
 
 /** Human-readable descriptions, shown in the demo's detected-entity list. */
 export const LABEL_DESCRIPTIONS: Record<KenyanLabel, string> = {
@@ -15,4 +15,5 @@ export const LABEL_DESCRIPTIONS: Record<KenyanLabel, string> = {
   PASSPORT: "Passport number",
   ORG_KE: "Company / organisation",
   LOCATION_KE: "Local area / estate / road",
+  NAME_KE: "Personal name (Swahili/Sheng cue)",
 };

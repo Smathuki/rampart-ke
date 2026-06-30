@@ -1,4 +1,4 @@
-import type { KenyanLabel, KenyanMatch } from "../types";
+import type { KenyanLabel, KenyanMatch } from "../types.js";
 
 /** Escape a literal string for safe inclusion in a RegExp. */
 export function escapeRegExp(s: string): string {

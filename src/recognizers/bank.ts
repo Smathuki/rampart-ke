@@ -1,5 +1,5 @@
-import type { Recognizer } from "../types";
-import { scan } from "./util";
+import type { Recognizer } from "../types.js";
+import { scan } from "./util.js";
 
 /**
  * Bank account number, context-anchored to "a/c" / "account" / "acct". 6–16

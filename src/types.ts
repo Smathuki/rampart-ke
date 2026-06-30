@@ -26,7 +26,8 @@ export type KenyanLabel =
   | "BANK_ACCOUNT"
   | "PASSPORT"
   | "ORG_KE"
-  | "LOCATION_KE";
+  | "LOCATION_KE"
+  | "NAME_KE"; // personal name introduced by a Swahili/Sheng cue
 
 /** A detected entity over the *original* (raw) text. */
 export interface KenyanMatch {
