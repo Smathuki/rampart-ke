@@ -1,0 +1,32 @@
+rampart-ke
+Copyright (c) 2026 the rampart-ke contributors
+
+This work is licensed under the Creative Commons Attribution 4.0 International
+License (CC BY 4.0). To view a copy of this license, visit
+https://creativecommons.org/licenses/by/4.0/ or read the full legal code at
+https://creativecommons.org/licenses/by/4.0/legalcode.
+
+You are free to share and adapt this material for any purpose, even
+commercially, provided you give appropriate credit, provide a link to the
+license, and indicate if changes were made.
+
+================================================================================
+ATTRIBUTION / NOTICE
+================================================================================
+
+rampart-ke is a derivative work built on Rampart by National Design Studio,
+used under CC BY 4.0:
+
+    Rampart — https://huggingface.co/nationaldesignstudio/rampart
+              https://github.com/nationaldesignstudio/rampart
+    © National Design Studio, licensed CC BY 4.0.
+
+Changes made by rampart-ke: adds an on-device deterministic recognizer layer for
+Kenyan identifiers (KRA PIN, M-Pesa codes, Kenyan phone numbers, National ID /
+Maisha Namba, SHA/SHIF, NHIF, NSSF, bank/passport, company names, and local
+geography), localizes the keep-set policy for Kenyan counties, and wraps the
+upstream guard with Kenyan-friendly placeholder tokens.
+
+Rampart's model was fine-tuned on the OpenPII 1.5M dataset
+(https://huggingface.co/datasets/ai4privacy/pii-masking-openpii-1.5m), also
+licensed CC BY 4.0.

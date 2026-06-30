@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>rampart-ke — on-device Kenyan PII redaction</title>
+    <style>
+      :root { color-scheme: light dark; --bg:#0b0e14; --fg:#e6e6e6; --mut:#8a93a6; --acc:#1f6feb; --mark:#7c3aed; }
+      * { box-sizing: border-box; }
+      body { margin:0; font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--fg); }
+      .wrap { max-width: 820px; margin: 0 auto; padding: 28px 20px 60px; }
+      h1 { font-size: 24px; margin: 0 0 2px; }
+      .sub { color: var(--mut); margin: 0 0 18px; }
+      .banner { background: rgba(31,111,235,.12); border:1px solid rgba(31,111,235,.35); border-radius:10px; padding:10px 14px; margin-bottom:18px; font-size:14px; }
+      label { font-size:13px; color:var(--mut); display:block; margin:14px 0 6px; }
+      select, textarea, button { font: inherit; color: inherit; }
+      select { background:#11151f; border:1px solid #283044; border-radius:8px; padding:8px 10px; }
+      textarea { width:100%; min-height:120px; background:#11151f; border:1px solid #283044; border-radius:10px; padding:12px; resize:vertical; }
+      button { margin-top:14px; background:var(--acc); border:0; color:#fff; padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:600; }
+      button[disabled] { opacity:.6; cursor:progress; }
+      .status { margin:14px 0; font-size:13px; color:var(--mut); min-height:18px; }
+      pre { white-space:pre-wrap; word-break:break-word; background:#11151f; border:1px solid #283044; border-radius:10px; padding:14px; }
+      mark { background:var(--mark); color:#fff; border-radius:4px; padding:1px 4px; font-size:13px; }
+      table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14px; }
+      th, td { text-align:left; padding:7px 8px; border-bottom:1px solid #1c2230; }
+      th { color:var(--mut); font-weight:600; }
+      code { background:#1c2230; padding:1px 5px; border-radius:4px; }
+      .foot { margin-top:28px; font-size:12px; color:var(--mut); }
+      a { color:#6ea8fe; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>rampart-ke</h1>
+      <p class="sub">Kenya-localized PII redaction that runs entirely in your browser.</p>
+      <div class="banner">
+        🔒 <strong>On-device.</strong> Detection runs locally via WebAssembly/WebGPU. The model
+        weights download once (~15&nbsp;MB) then cache — after that you can <strong>disconnect
+        Wi-Fi</strong> and redaction still works. No text is sent anywhere.
+      </div>
+
+      <label for="sample">Load a sample</label>
+      <select id="sample"></select>
+
+      <label for="input">Text to redact</label>
+      <textarea id="input"></textarea>
+
+      <button id="run">Redact on-device</button>
+      <div class="status" id="status"></div>
+
+      <label>Redacted output (safe to send to an LLM / server)</label>
+      <pre id="output"></pre>
+
+      <div id="entities"></div>
+
+      <p class="foot">
+        Built on <a href="https://huggingface.co/nationaldesignstudio/rampart">Rampart</a> by
+        National Design Studio (CC&nbsp;BY&nbsp;4.0). rampart-ke adds deterministic recognizers for
+        Kenyan identifiers; names &amp; addresses are caught by Rampart's on-device model.
+      </p>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
