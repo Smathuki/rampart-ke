@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>rampart-ke — Keep Kenyan data in Kenya</title>
+    <meta name="description" content="On-device PII redaction for Kenya. Scrub KRA PINs, IDs, M-Pesa and names before data leaves the device — with an ODPC-ready compliance report." />
+    <style>
+      :root {
+        --green:#0b6b3a; --green-d:#084d29; --ink:#12181f; --mut:#5b6675; --line:#e7ebf0;
+        --bg:#ffffff; --soft:#f5f8f6; --mark:#0b6b3a; --code:#0e1524;
+      }
+      * { box-sizing:border-box; }
+      html { scroll-behavior:smooth; }
+      body { margin:0; font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--bg); }
+      .wrap { max-width:960px; margin:0 auto; padding:0 22px; }
+      a { color:var(--green); text-decoration:none; } a:hover { text-decoration:underline; }
+      h1,h2,h3 { line-height:1.2; letter-spacing:-.01em; }
+      nav { position:sticky; top:0; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); z-index:10; }
+      nav .wrap { display:flex; align-items:center; gap:20px; height:60px; }
+      .logo { font-weight:800; font-size:18px; color:var(--ink); }
+      .logo b { color:var(--green); }
+      nav .links { margin-left:auto; display:flex; gap:20px; font-size:14px; font-weight:600; }
+      nav .links a { color:var(--mut); }
+      .btn { display:inline-block; background:var(--green); color:#fff !important; padding:11px 20px; border-radius:9px; font-weight:700; border:0; cursor:pointer; text-decoration:none !important; }
+      .btn:hover { background:var(--green-d); }
+      .btn.ghost { background:transparent; color:var(--green) !important; border:1.5px solid var(--green); }
+      section { padding:64px 0; border-bottom:1px solid var(--line); }
+      .hero { padding:72px 0 60px; }
+      .kicker { color:var(--green); font-weight:700; font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
+      .hero h1 { font-size:44px; margin:12px 0 14px; }
+      .hero p.lead { font-size:20px; color:var(--mut); margin:0 0 26px; max-width:680px; }
+      .cta { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:34px; }
+      .example { background:var(--code); color:#e6edf3; border-radius:14px; padding:20px 22px; font:14px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace; overflow:auto; }
+      .example .lbl { color:#7ee2a8; font-weight:700; }
+      .example .arrow { color:#6b7688; }
+      h2.section-title { font-size:30px; margin:0 0 8px; }
+      .section-sub { color:var(--mut); margin:0 0 30px; max-width:680px; }
+      .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+      .card { border:1px solid var(--line); border-radius:14px; padding:20px; background:#fff; }
+      .card h3 { margin:0 0 6px; font-size:17px; }
+      .card p { margin:0; color:var(--mut); font-size:14.5px; }
+      .chips { display:flex; flex-wrap:wrap; gap:8px; }
+      .chip { background:var(--soft); border:1px solid var(--line); border-radius:999px; padding:6px 13px; font-size:13.5px; font-weight:600; }
+      .soft { background:var(--soft); }
+      .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; counter-reset:s; }
+      .step { border:1px solid var(--line); border-radius:14px; padding:20px; position:relative; background:#fff; }
+      .step::before { counter-increment:s; content:counter(s); display:inline-grid; place-items:center; width:30px; height:30px; border-radius:50%; background:var(--green); color:#fff; font-weight:800; margin-bottom:10px; }
+      /* Playground */
+      .pg { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+      textarea { width:100%; min-height:150px; border:1px solid var(--line); border-radius:12px; padding:14px; font:14px/1.6 ui-monospace,Menlo,monospace; resize:vertical; }
+      .out { border:1px solid var(--line); border-radius:12px; padding:14px; background:var(--soft); min-height:150px; white-space:pre-wrap; word-break:break-word; font:14px/1.6 ui-monospace,Menlo,monospace; }
+      mark { background:var(--mark); color:#fff; border-radius:4px; padding:1px 5px; }
+      .pg-note { font-size:13px; color:var(--mut); margin-top:10px; }
+      .curl { background:var(--code); color:#e6edf3; border-radius:12px; padding:16px; font:13px/1.7 ui-monospace,Menlo,monospace; overflow:auto; margin-top:18px; }
+      .warn { background:#fff8e6; border:1px solid #f2e2b0; border-radius:12px; padding:14px 16px; font-size:14.5px; color:#6a5514; margin-bottom:24px; }
+      .pill { display:inline-block; background:#eaf5ee; color:var(--green-d); font-weight:700; font-size:12px; padding:3px 10px; border-radius:999px; }
+      footer { padding:40px 0 60px; color:var(--mut); font-size:14px; }
+      @media (max-width:760px){ .grid,.steps,.pg{ grid-template-columns:1fr; } .hero h1{ font-size:34px; } nav .links a:not(.btn){ display:none; } }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="wrap">
+        <span class="logo">rampart<b>-ke</b></span>
+        <span class="links">
+          <a href="#how">How it works</a>
+          <a href="#api">API</a>
+          <a href="#dpg">Public good</a>
+          <a class="btn" href="https://github.com/Smathuki/rampart-ke">GitHub</a>
+        </span>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="wrap">
+        <div class="kicker">Data sovereignty for Kenya</div>
+        <h1>Keep Kenyan data in Kenya.</h1>
+        <p class="lead">
+          On-device PII redaction. Personal data is scrubbed <strong>before a single byte leaves the
+          device</strong> — so KRA PINs, IDs, M-Pesa records and names never reach a foreign AI server,
+          a log, or the wrong hands.
+        </p>
+        <div class="cta">
+          <a class="btn" href="#api">Try the API</a>
+          <a class="btn ghost" href="https://github.com/Smathuki/rampart-ke">Read the code</a>
+        </div>
+        <div class="example">
+          "My KRA PIN is A012345678Z, call me on 0712345678 — Wanjiku, Kilimani."
+          <br /><span class="arrow">↓ redacted on-device, before it leaves the browser ↓</span><br />
+          "My KRA PIN is <span class="lbl">[KRA_PIN_1]</span>, call me on <span class="lbl">[KE_PHONE_1]</span>
+          — <span class="lbl">[NAME_KE_1]</span>, <span class="lbl">[LOCATION_KE_1]</span>."
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <div class="wrap">
+        <h2 class="section-title">The problem</h2>
+        <p class="section-sub">
+          Every Kenyan organisation wants to plug AI into support chats, intake forms and triage. But
+          doing so ships citizens' KRA PINs, National IDs, M-Pesa records, health details and names to
+          servers outside Kenya — in direct tension with the <strong>Data Protection Act, 2019</strong>
+          and the ODPC's growing enforcement. Today's options are "don't use AI" or "trust the vendor."
+          Neither is acceptable.
+        </p>
+      </div>
+    </section>
+
+    <section id="how" class="soft">
+      <div class="wrap">
+        <h2 class="section-title">How it works</h2>
+        <p class="section-sub">Two layers run on the user's device, in ~100&nbsp;ms, with no server round-trip — and keep working offline after first load.</p>
+        <div class="steps">
+          <div class="step"><h3>Detect locally</h3><p>Deterministic Kenyan recognizers + a small on-device model find the PII in the browser (WebAssembly/WebGPU).</p></div>
+          <div class="step"><h3>Redact before egress</h3><p>Each value becomes a placeholder like <code>[KRA_PIN_1]</code>. Only placeholdered text is ever sent to an AI or server.</p></div>
+          <div class="step"><h3>Restore on display</h3><p>Real values are rehydrated <strong>locally</strong> for the user. The plain values never leave the device.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2 class="section-title">Built for Kenya</h2>
+        <p class="section-sub">Localized recognizers, not a Western tool with a Kenyan sticker. Coarse geography (counties) is kept for analytics; the identifying detail is redacted.</p>
+        <div class="chips">
+          <span class="chip">KRA PIN</span><span class="chip">M-Pesa code &amp; Paybill</span>
+          <span class="chip">National ID / Maisha Namba</span><span class="chip">SHA / SHIF</span>
+          <span class="chip">NHIF</span><span class="chip">NSSF</span><span class="chip">Kenyan phone (+254 / 07 / 01)</span>
+          <span class="chip">Bank &amp; passport</span><span class="chip">Company names</span>
+          <span class="chip">Estates &amp; roads</span><span class="chip">Names in Swahili / Sheng</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="soft">
+      <div class="wrap">
+        <h2 class="section-title">Proof of compliance, built in</h2>
+        <p class="section-sub">
+          Generate an <strong>ODPC-style compliance report</strong> — how many PII instances were redacted,
+          by category, by period. Crucially, the audit log itself holds <strong>counts only, no personal
+          data</strong>, so keeping it is not a new liability. Evidence for regulators and boards, on demand.
+        </p>
+        <a class="btn ghost" href="/api/report">View a sample report →</a>
+      </div>
+    </section>
+
+    <section id="api">
+      <div class="wrap">
+        <h2 class="section-title">Hosted API <span class="pill">for systems that can't run client-side</span></h2>
+        <p class="section-sub">
+          The on-device library is the recommended path — there, data never leaves the browser. For legacy
+          or back-office systems that can't run WebAssembly, this API does the redaction server-side.
+          <strong>Host it in-country</strong> (e.g. a Kenyan data centre) so citizen data still stays in Kenya.
+        </p>
+        <div class="warn">
+          ⚠️ Server-side means the text does reach this service. Deploy it inside your own infrastructure /
+          a Kenyan data centre — never a foreign cloud region — to preserve data sovereignty.
+        </div>
+
+        <div class="pg">
+          <div>
+            <label for="in"><strong>Send text</strong></label>
+            <textarea id="in">QFT3X1AB9Z Confirmed. Ksh2,500 sent to JOHN OCHIENG 0712345678. My KRA PIN is A012345678Z, ID No. 23456789. I live in Kilimani, Nairobi.</textarea>
+          </div>
+          <div>
+            <label><strong>Redacted response</strong></label>
+            <div class="out" id="out">Click “Redact via API”. First call warms the model (a few seconds), then it's fast.</div>
+          </div>
+        </div>
+        <div style="margin-top:14px; display:flex; gap:12px; align-items:center;">
+          <button class="btn" id="go">Redact via API</button>
+          <span class="pg-note" id="meta"></span>
+        </div>
+
+        <div class="curl"># Same call from your backend:
+curl -s http://localhost:8787/api/redact \
+  -H 'content-type: application/json' \
+  -d '{"text":"My KRA PIN is A012345678Z, call 0712345678"}'
+# → {"redacted":"My KRA PIN is [KRA_PIN_1], call [KE_PHONE_1]","redactions":2,"labels":{"KRA_PIN":1,"KE_PHONE":1}}</div>
+      </div>
+    </section>
+
+    <section id="dpg" class="soft">
+      <div class="wrap">
+        <h2 class="section-title">A Digital Public Good</h2>
+        <p class="section-sub">
+          Open source (CC&nbsp;BY&nbsp;4.0), built on National Design Studio's open Rampart model, running on
+          open web/ONNX standards with no lock-in. It gives Global-South citizens — starting with Kenya — a
+          way to use modern AI without surrendering their identity data to foreign servers. Privacy and
+          do-no-harm by design; works offline for low-bandwidth settings.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2 class="section-title">Who it's for</h2>
+        <div class="grid">
+          <div class="card"><h3>Government &amp; eCitizen</h3><p>Redact citizen data on-device before it touches a ministry system or an external AI. Available as an annual enterprise licence.</p></div>
+          <div class="card"><h3>Fintech &amp; health-tech</h3><p>Ship AI features without shipping regulated data (M-Pesa, IDs, health records) off-device.</p></div>
+          <div class="card"><h3>Any Kenyan SaaS</h3><p>A free npm package to drop into your front-end today, plus a hosted API for legacy back-ends.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <p>
+          <strong>rampart-ke</strong> — a first-line technical control that materially reduces data-transfer
+          exposure (not, by itself, a complete DPA compliance programme).
+        </p>
+        <p>
+          Open source: <a href="https://github.com/Smathuki/rampart-ke">github.com/Smathuki/rampart-ke</a> ·
+          Built on <a href="https://huggingface.co/nationaldesignstudio/rampart">Rampart</a> by National Design
+          Studio (CC&nbsp;BY&nbsp;4.0) · Contact: <a href="mailto:rockmusyoki@gmail.com">rockmusyoki@gmail.com</a>
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      const PLACEHOLDER = /\[[A-Z][A-Z0-9_]*_\d+\]/g;
+      const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const highlight = (s) => esc(s).replace(PLACEHOLDER, (t) => `<mark>${t}</mark>`);
+
+      const go = document.getElementById("go");
+      const out = document.getElementById("out");
+      const meta = document.getElementById("meta");
+
+      go.addEventListener("click", async () => {
+        go.disabled = true;
+        out.textContent = "Redacting via API…";
+        meta.textContent = "";
+        const t0 = performance.now();
+        try {
+          const r = await fetch("/api/redact", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ text: document.getElementById("in").value }),
+          });
+          const data = await r.json();
+          if (!r.ok) throw new Error(data.error || "request failed");
+          const ms = Math.round(performance.now() - t0);
+          out.innerHTML = highlight(data.redacted);
+          const labels = Object.entries(data.labels || {}).map(([l, n]) => `${l}×${n}`).join(", ");
+          meta.textContent = `${data.redactions} redaction(s) in ${ms} ms${labels ? " — " + labels : ""}. On this server only.`;
+        } catch (e) {
+          out.textContent = "Error: " + (e && e.message ? e.message : e) + "\n\nIs the API server running? (npm run serve)";
+        } finally {
+          go.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
