@@ -1,4 +1,10 @@
-import { createKenyanGuard, LABEL_DESCRIPTIONS, type KenyanGuard } from "../src/index";
+import {
+  createKenyanGuard,
+  ComplianceRecorder,
+  generateComplianceReport,
+  LABEL_DESCRIPTIONS,
+  type KenyanGuard,
+} from "../src/index";
 import { SAMPLES } from "../fixtures/samples";
 
 const $ = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
@@ -9,6 +15,11 @@ const runBtn = $<HTMLButtonElement>("run");
 const status = $<HTMLDivElement>("status");
 const output = $<HTMLPreElement>("output");
 const entitiesEl = $<HTMLDivElement>("entities");
+const complianceEl = $<HTMLDivElement>("compliance");
+const reportBtn = $<HTMLButtonElement>("report");
+
+// One recorder for the whole session — PII-free counts only.
+const recorder = new ComplianceRecorder();
 
 // Populate the sample picker and prefill the textarea.
 SAMPLES.forEach((s, i) => {
@@ -68,10 +79,44 @@ runBtn.addEventListener("click", async () => {
          <p class="foot">+ ${upstreamCount} name/address span(s) caught by the Rampart model.</p>`
       : `<p class="foot">No Kenyan identifiers found; ${upstreamCount} span(s) caught by the model.</p>`;
 
+    recorder.record(res);
+    renderCompliance();
+
     status.textContent = `Done in ${ms} ms — 100% on this device.`;
   } catch (err) {
     status.textContent = `Error: ${err instanceof Error ? err.message : String(err)}`;
   } finally {
     runBtn.disabled = false;
   }
+});
+
+function describe(label: string): string {
+  return (LABEL_DESCRIPTIONS as Record<string, string>)[label] ?? label.toLowerCase().replace(/_/g, " ");
+}
+
+/** Render the running compliance tally (aggregate counts only — no PII). */
+function renderCompliance(): void {
+  const s = recorder.summary();
+  const chips = Object.entries(s.byLabel)
+    .map(([l, n]) => `<span class="chip">${escapeHtml(describe(l))}: ${n}</span>`)
+    .join(" ");
+  complianceEl.innerHTML =
+    `<div class="tally"><strong>${s.totalRedactions}</strong> PII instance(s) redacted across ` +
+    `${s.sessions} message(s) — audit log holds counts only, no personal data.</div>` +
+    `<div class="chips">${chips}</div>`;
+  reportBtn.disabled = s.totalRedactions === 0;
+}
+
+reportBtn.addEventListener("click", () => {
+  const { html } = generateComplianceReport(recorder.summary(), {
+    organisation: "Demo Organisation",
+    packageVersion: "rampart-ke",
+  });
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "rampart-ke-compliance-report.html";
+  a.click();
+  URL.revokeObjectURL(url);
 });

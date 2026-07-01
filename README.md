@@ -98,6 +98,26 @@ are **context-anchored**, not matched on shape alone. The precision gate lives i
 [`__tests__/falsePositives.test.ts`](__tests__/falsePositives.test.ts) — benign Kenyan text that
 must produce zero redactions. Tune recognizers against that corpus, not in isolation.
 
+## Compliance reporting
+
+Prove your data-protection posture without storing any personal data. `ComplianceRecorder` keeps
+**aggregate counts only** (label + day + count — never a value), and renders an ODPC-style report:
+
+```ts
+import { createKenyanGuard, ComplianceRecorder, generateComplianceReport } from "rampart-ke";
+
+const guard = await createKenyanGuard();
+const audit = new ComplianceRecorder();
+
+audit.record(await guard.protect(userText)); // counts only — no PII ever recorded
+
+const { html, markdown } = generateComplianceReport(audit.summary(), { organisation: "Acme Ltd" });
+// → "N PII instances redacted on-device, by category, this period." Safe to keep and to show the ODPC.
+```
+
+The audit log is itself free of personal data, so retaining it creates no new liability. The demo has
+a **Download compliance report** button.
+
 ## Demo
 
 ```bash

@@ -3,3 +3,6 @@ dist/
 dist-demo/
 *.log
 .DS_Store
+
+# Business collateral — pricing/strategy stays out of the public repo
+business/

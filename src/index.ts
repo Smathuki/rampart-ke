@@ -111,5 +111,13 @@ export { repairSpanBoundaries, withBoundaryRepair, keepCounties, createRepairing
 export { KenyanEntityTable } from "./session.js";
 export { KE_KEEP_LABELS } from "./policy.js";
 export { LABEL_DESCRIPTIONS } from "./labels.js";
+export { ComplianceRecorder, generateComplianceReport, parsePlaceholderLabel } from "./compliance.js";
 export type { KenyanEntity, KenyanScrubResult } from "./session.js";
 export type { KenyanGuardOptions, KenyanLabel, KenyanMatch, Recognizer } from "./types.js";
+export type {
+  ComplianceSummary,
+  ComplianceReport,
+  ComplianceReportOptions,
+  RecorderState,
+  RedactionOutcome,
+} from "./compliance.js";

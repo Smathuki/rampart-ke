@@ -38,6 +38,18 @@ Newest entries at the top.
 
 ## Changelog
 
+### 2026-07-01 — Compliance audit + ODPC report (FEATURE)
+- **Why:** the ODPC requires data handlers to demonstrate how they protect data; this is also the
+  linchpin monetization asset (government, open-core, grants all need it).
+- **What:** `src/compliance.ts` — `ComplianceRecorder` (counts redactions by label/day) and
+  `generateComplianceReport` (Markdown + standalone HTML, DPA-2019 statements). Demo gains a live
+  tally + "Download compliance report" button.
+- **Key decision — PII-free by design:** the recorder consumes only the placeholder *tokens* from a
+  `protect()` result and stores `{ label, day, count }`. No values, no text, no hashes. Regression
+  test feeds a full result *including* a real value and asserts nothing leaks into the serialized
+  state or the report. The audit log is therefore not itself a data-protection liability — which is
+  the selling point.
+
 ### 2026-06-30 — Swahili/Sheng name leakage (FIXED)
 - **Symptom:** the model (Western-name-trained) left Kenyan names exposed in Swahili context —
   `"Jina langu ni Kamau"` → Kamau leaked; `"Mimi ni Otieno"` → Otieno leaked. Inconsistent (it did
